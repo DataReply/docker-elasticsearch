@@ -1,5 +1,5 @@
 FROM quay.io/pires/docker-jre:8u92-r1
-MAINTAINER pjpires@gmail.com
+MAINTAINER a.topchyan@reply.de
 
 # Export HTTP & Transport
 EXPOSE 9200 9300
@@ -13,14 +13,14 @@ RUN apk add --update curl ca-certificates sudo && \
   gunzip -c - | tar xf - ) && \
   mv /elasticsearch-$VERSION /elasticsearch && \
   rm -rf $(find /elasticsearch | egrep "(\.(exe|bat)$|sigar/.*(dll|winnt|x86-linux|solaris|ia64|freebsd|macosx))") && \
-  apk del curl
+  apk del curl && apk add nodejs && rm -rf /var/cache/apk/*
 
 # Volume for Elasticsearch data
 VOLUME ["/data"]
 
 # Copy configuration
 COPY config /elasticsearch/config
-
+COPY bootstrap.js /usr/local/bin/bootstrap.js
 # Copy run script
 COPY run.sh /
 
